@@ -1,0 +1,170 @@
+<?php require_once __DIR__ . '/layout/header.phtml';
+ ?>
+
+<main class="container my-4">
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h1 class="h3 mb-1">Equipos de <?= htmlspecialchars($ligaNombre ?? 'todas las ligas') ?></h1>
+                <p class="text-muted mb-0">Total: <?= (int) $count ?></p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-success btn-sm" href="#add-equipo-form">
+                    Agregar equipo
+                </a>
+                <a class="btn btn-primary btn-sm" href="<?= htmlspecialchars(BASE_URL . '?action=ligas') ?>">
+                    Volver a ligas
+                </a>
+            </div>
+        </div>
+
+        <?php if (!empty($equipoToEdit)): ?>
+            <div class="card mb-4 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <strong>Editar equipo</strong>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="<?= htmlspecialchars(BASE_URL . '?action=actualizarequipo') ?>">
+                        <input type="hidden" name="id_equipo" value="<?= htmlspecialchars($equipoToEdit->id_equipo) ?>">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre del equipo</label>
+                                <input required name="nombre_equipo" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->nombre_equipo) ?>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Director técnico</label>
+                                <input required name="dt" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->dt) ?>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Presidente</label>
+                                <input required name="presidente" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->presidente) ?>">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Estadio</label>
+                                <input required name="nombre_estadio" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->nombre_estadio) ?>">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Liga</label>
+                                <select required name="id_liga" class="form-select">
+                                    <?php foreach ($ligas as $liga): ?>
+                                        <option value="<?= htmlspecialchars($liga->id_liga) ?>" <?= $liga->id_liga == $equipoToEdit->id_liga ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($liga->nombre_liga) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                            <a class="btn btn-secondary" href="<?= htmlspecialchars(BASE_URL . '?action=equipos/' . $idLiga) ?>">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="card mb-4" id="add-equipo-form">
+            <div class="card-header bg-light">
+                <strong>Agregar equipo</strong>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="<?= htmlspecialchars(BASE_URL . '?action=agregarequipo') ?>">
+                    <?php if (!empty($idLiga)): ?>
+                        <input type="hidden" name="id_liga" value="<?= htmlspecialchars($idLiga) ?>">
+                        <div class="mb-3">
+                            <label class="form-label">Liga</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($ligaNombre) ?>" disabled>
+                        </div>
+                    <?php else: ?>
+                        <div class="mb-3">
+                            <label class="form-label">Liga</label>
+                            <select required name="id_liga" class="form-select">
+                                <option value="">Seleccionar liga</option>
+                                <?php foreach ($ligas as $liga): ?>
+                                    <option value="<?= htmlspecialchars($liga->id_liga) ?>"><?= htmlspecialchars($liga->nombre_liga) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre del equipo</label>
+                            <input required name="nombre_equipo" type="text" class="form-control" placeholder="Nombre del equipo">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Director técnico</label>
+                            <input required name="dt" type="text" class="form-control" placeholder="DT">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Presidente</label>
+                            <input required name="presidente" type="text" class="form-control" placeholder="Presidente">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Estadio</label>
+                            <input required name="nombre_estadio" type="text" class="form-control" placeholder="Estadio">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Agregar equipo</button>
+                </form>
+            </div>
+        </div>
+
+        <?php if (empty($equipos)): ?>
+            <div class="alert alert-info">No hay equipos cargados en la base de datos.</div>
+        <?php else: ?>
+            <div class="table-responsive">
+               <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Liga</th>
+            <th>Escudo</th>
+            <th>Ciudad</th>
+            <th>DT</th>
+            <th>Presidente</th>
+            <th>Estadio</th>
+            <th>Jugadores</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($equipos as $equipo): ?>
+            <tr>
+                <td><?= htmlspecialchars($equipo->nombre_equipo ?? '') ?></td>
+                <td><?= htmlspecialchars($equipo->nombre_liga ?? $equipo->id_liga ?? 'Liga desconocida') ?></td>
+                <td>
+                    <img src="<?= htmlspecialchars($equipo->escudo ?? '') ?>" width="80" alt="Escudo">
+                </td>
+                <td><?= htmlspecialchars($equipo->ciudad ?? '') ?></td>
+                <td><?= htmlspecialchars($equipo->dt ?? '') ?></td>
+                <td><?= htmlspecialchars($equipo->presidente ?? '') ?></td>
+                <td><?= htmlspecialchars($equipo->nombre_estadio ?? '') ?></td>
+                <td>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a class="btn btn-secondary btn-sm" href="<?= htmlspecialchars(BASE_URL . '?action=jugadores/' . $equipo->id_equipo) ?>">
+                            Ver jugadores
+                        </a>
+                        <a class="btn btn-outline-success btn-sm" href="<?= htmlspecialchars(BASE_URL . '?action=jugadores/' . $equipo->id_equipo) ?>">
+                            Agregar jugador
+                        </a>
+                    </div>
+                </td>
+                <td class="d-flex gap-2 flex-wrap">
+                    <a class="btn btn-warning btn-sm" href="<?= htmlspecialchars(BASE_URL . '?action=editarequipo/' . $equipo->id_equipo) ?>">
+                        Editar
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="<?= htmlspecialchars(BASE_URL . '?action=eliminarequipo/' . $equipo->id_equipo . '&id_liga=' . $idLiga) ?>" onclick="return confirm('Eliminar equipo?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+            </div>
+        <?php endif; ?>
+    </section>
+</main>
+
+<?php require_once __DIR__ . '/layout/footer.phtml'; ?>

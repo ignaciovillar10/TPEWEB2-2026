@@ -1,0 +1,9 @@
+<?php require_once __DIR__ . '/layout/header.phtml'; ?>
+
+<main class="container my-4">
+    <div class="alert alert-danger">
+        <?= htmlspecialchars($err ?? 'Ocurrio un error inesperado.') ?>
+    </div>
+</main>
+
+<?php require_once __DIR__ . '/layout/footer.phtml'; ?>
