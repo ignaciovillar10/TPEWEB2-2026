@@ -1,0 +1,78 @@
+<?php require __DIR__ . '/header.phtml'; ?>
+<main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-1"> Todas las ligas </h1>
+            <p class="text-muted mb-0">Total: <?= (int)$count ?></p>
+        </div>
+    </div>
+
+    <div class="card mb-4 <?= $ligaToEdit ? 'border-warning' : '' ?>">
+        <div class="card-header <?= $ligaToEdit ? 'bg-warning text-dark' : 'bg-light' ?>">
+            <strong><?= $ligaToEdit ? 'Editar liga' : 'Agregar liga' ?></strong>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="<?= BASE_URL . ($ligaToEdit ? 'actualizarliga' : 'agregarliga') ?>">
+                <?php if ($ligaToEdit): ?>
+                    <input type="hidden" name="id_liga" value="<?= htmlspecialchars($ligaToEdit->id_liga) ?>">
+                <?php endif; ?>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre de la liga</label>
+                        <input required name="nombre_liga" type="text" class="form-control" value="<?= htmlspecialchars($ligaToEdit->nombre_liga ?? '') ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Ciudad sede</label>
+                        <input name="ciudad_sede" type="text" class="form-control" value="<?= htmlspecialchars($ligaToEdit->ciudad_sede ?? '') ?>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Cant. equipos</label>
+                        <input name="cant_equipos" type="number" min="0" class="form-control" value="<?= htmlspecialchars($ligaToEdit->cant_equipos ?? 0) ?>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Temporada</label>
+                        <input name="temporada" type="number" min="1900" class="form-control" value="<?= htmlspecialchars($ligaToEdit->temporada ?? date('Y')) ?>">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-<?= $ligaToEdit ? 'primary' : 'success' ?> w-100"><?= $ligaToEdit ? 'Guardar' : 'Agregar' ?></button>
+                    </div>
+                </div>
+                <?php if ($ligaToEdit): ?>
+                    <a class="btn btn-secondary btn-sm mt-3" href="<?= BASE_URL ?>ligas">Cancelar</a>
+                <?php endif; ?>
+            </form>
+        </div>
+    </div>
+
+    <?php if (!$ligas): ?>
+        <div class="alert alert-info">No hay ligas registradas.</div>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr><th>ID</th><th>Nombre</th><th>Ciudad</th><th>Equipos</th><th>Temporada</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                <?php foreach ($ligas as $liga): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($liga->id_liga) ?></td>
+                        <td><?= htmlspecialchars($liga->nombre_liga) ?></td>
+                        <td><?= htmlspecialchars($liga->ciudad_sede) ?></td>
+                        <td><?= htmlspecialchars($liga->cant_equipos) ?></td>
+                        <td><?= htmlspecialchars($liga->temporada) ?></td>
+                        <td class="d-flex gap-2 flex-wrap">
+                            <a class="btn btn-primary btn-sm" href="<?= BASE_URL ?>equipos/<?= htmlspecialchars($liga->id_liga) ?>">Ver equipos</a>
+                              <?php
+            if (isset($_SESSION['ID_USER'])): ?>
+                            <a class="btn btn-warning btn-sm" href="<?= BASE_URL ?>editarliga/<?= htmlspecialchars($liga->id_liga) ?>">Editar</a>
+                            <a class="btn btn-danger btn-sm" href="<?= BASE_URL ?>eliminarliga/<?= htmlspecialchars($liga->id_liga) ?>" onclick="return confirm('¿Eliminar liga? También se eliminarán sus equipos ');">Eliminar</a>
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</main>
+<?php require __DIR__ . '/footer.phtml'; ?>
