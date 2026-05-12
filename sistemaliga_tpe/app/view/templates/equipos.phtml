@@ -1,0 +1,94 @@
+<?php require __DIR__ . '/header.phtml'; ?>
+<main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-1">Equipos de <?= htmlspecialchars($nombre_liga) ?></h1>
+            <p class="text-muted mb-0">Total: <?= (int)$count ?></p>
+        </div>
+        <a class="btn btn-primary btn-sm" href="<?= BASE_URL ?>ligas">Volver a ligas</a>
+    </div>
+
+    <div class="card mb-4 <?= $equipoToEdit ? 'border-warning' : '' ?>" id="form-equipo">
+        <div class="card-header <?= $equipoToEdit ? 'bg-warning text-dark' : 'bg-light' ?>">
+            <strong><?= $equipoToEdit ? 'Editar equipo' : 'Agregar equipo' ?></strong>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="<?= BASE_URL . ($equipoToEdit ? 'actualizarequipo' : 'agregarequipo') ?>">
+                <?php if ($equipoToEdit): ?>
+                    <input type="hidden" name="id_equipo" value="<?= htmlspecialchars($equipoToEdit->id_equipo) ?>">
+                <?php endif; ?>
+                <?php if ($idLiga): ?>
+                    <input type="hidden" name="id_liga" value="<?= htmlspecialchars($idLiga) ?>">
+                <?php endif; ?>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre del equipo</label>
+                        <input required name="nombre_equipo" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->nombre_equipo ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Liga</label>
+                        <select required name="id_liga" class="form-select" <?= $idLiga && !$equipoToEdit ? 'disabled' : '' ?>>
+                            <option value="">Seleccionar liga</option>
+                            <?php foreach ($ligas as $liga): ?>
+                                <?php $selected = ($equipoToEdit->nombre_liga ?? $ligaNombre) === $liga->nombre_liga; ?>
+                                <option value="<?= htmlspecialchars($liga->id_liga) ?>" <?= $selected ? 'selected' : '' ?>><?= htmlspecialchars($liga->nombre_liga) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Ciudad</label>
+                        <input name="ciudad_equipo" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->ciudad_equipo ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Escudo URL</label>
+                        <input name="escudo" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->escudo ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Director técnico</label>
+                        <input name="dt" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->dt ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Presidente</label>
+                        <input name="presidente" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->presidente ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Estadio</label>
+                        <input name="nombre_estadio" type="text" class="form-control" value="<?= htmlspecialchars($equipoToEdit->nombre_estadio ?? '') ?>">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-<?= $equipoToEdit ? 'primary' : 'success' ?>"><?= $equipoToEdit ? 'Guardar cambios' : 'Agregar equipo' ?></button>
+                        <?php if ($equipoToEdit): ?><a class="btn btn-secondary" href="<?= BASE_URL ?>equipos<?= $idLiga ? '/' . htmlspecialchars($idLiga) : '' ?>">Cancelar</a><?php endif; ?>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <?php if (!$equipos): ?>
+        <div class="alert alert-info">No hay equipos cargados.</div>
+    <?php else: ?>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-dark"><tr><th>Nombre</th><th>Liga</th><th>Ciudad</th><th>DT</th><th>Presidente</th><th>Estadio</th><th>Escudo</th><th>Acciones</th></tr></thead>
+                <tbody>
+                <?php foreach ($equipos as $equipo): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($equipo->nombre_equipo) ?></td>
+                        <td><?= htmlspecialchars($equipo->nombre_liga) ?></td>
+                        <td><?= htmlspecialchars($equipo->ciudad_equipo) ?></td>
+                        <td><?= htmlspecialchars($equipo->dt) ?></td>
+                        <td><?= htmlspecialchars($equipo->presidente) ?></td>
+                        <td><?= htmlspecialchars($equipo->nombre_estadio) ?></td>
+                        <td><?php if (!empty($equipo->escudo)): ?><img src="<?= htmlspecialchars($equipo->escudo) ?>" width="60" alt="Escudo"><?php endif; ?></td>
+                        <td class="d-flex gap-2 flex-wrap">
+                            <a class="btn btn-warning btn-sm" href="<?= BASE_URL ?>editarequipo/<?= htmlspecialchars($equipo->id_equipo) ?>">Editar</a>
+                            <a class="btn btn-danger btn-sm" href="<?= BASE_URL ?>eliminarequipo/<?= htmlspecialchars($equipo->id_equipo) ?>" onclick="return confirm('¿Eliminar equipo?');">Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</main>
+<?php require __DIR__ . '/footer.phtml'; ?>
