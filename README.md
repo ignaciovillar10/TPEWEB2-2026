@@ -8,3 +8,5 @@ Sistema de liga de futbol
 
 # Descripcion:
 en este sistema se podran visualizar los equipos que pertenezcan a una liga especifica y los jugadores que contiene,ademas se podra interactuar con la liga, los equipos y los jugadores siempre y cuando el usuario este correctamente logueado podra insertar,modificar/actualizar ,eliminar, cualquier tipo de dato.
+# Recordatorio:
+usar el sql sistemaliga_tpe(6) ya que esta modificado por que se eliminaron algunas columnas las cuales existen en el (5) 
