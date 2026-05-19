@@ -1,7 +1,7 @@
 # TPEWEB2-2026
 # integrantes:
 Ignacio Villar ignaciovillaar@gmail.com
-alex gonzalo quintana martin alex.emailpersonalprivado@gmail.com(abandonó antes del tpe2)
+* alex gonzalo quintana martin alex.emailpersonalprivado@gmail.com(abandonó antes del tpe2)
 
 # Tematica: 
 Sistema de liga de futbol 
